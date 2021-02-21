@@ -3,6 +3,7 @@
 #include<vector>
 #include<string>
 #include<cstdlib>
+#include<cstring>
 
 using namespace std;
 
@@ -20,20 +21,61 @@ string toUpperStr(string x){
     return y;
 }
 
-void importDataFromFile(){
-
+void importDataFromFile(string fn,vector<string> &names,vector<int> &scores,vector<char> &grades){
+    ifstream op;
+    op.open("name_score.txt");
+    string text;
+    char name[100];
+    char format[] = "%[^:]:%i %i %i";
+    while(getline(op,text)){
+        int a=0,b=0,c=0;
+        char textx[100];
+        strcpy(textx,text.c_str());
+        sscanf(textx,format,name,&a,&b,&c);
+        names.push_back(name);
+        scores.push_back(a+b+c);
+        grades.push_back(score2grade(a+b+c));
+    }
+    op.close();
 }
 
-void getCommand(){
-
+void getCommand(string &command,string &key){
+    string text;
+    cout << "Please input your command: ";
+    getline(cin,text);
+    int lo = text.find_first_of(" ");
+    command = text.substr(0,lo);
+    key = text.substr(lo+1);
 }
 
-void searchName(){
-
+void searchName(vector<string> &names,vector<int> &scores,vector<char> &grades,string key){
+    int N = names.size();
+    int status = 0;
+    cout << "---------------------------------\n";
+    for(int i = 0 ; i < N ; i++){
+        if(key == toUpperStr(names[i])){
+            cout << names[i] << "'s score = " << scores[i] << endl << names[i] << "'s grade = " << grades[i] << endl;
+            status = 1;
+        }
+    }
+    if(status != 1) cout << "Cannot found." << endl;
+    cout << "---------------------------------\n";
 }
 
-void searchGrade(){
-
+void searchGrade(vector<string> &names,vector<int> &scores,vector<char> &grades,string key){
+    int N = grades.size();
+    int status = 0;
+    char ikey[100];
+    strcpy(ikey,key.c_str());
+    cout << "---------------------------------\n";
+    for(int i = 0 ; i < N ; i++){
+        if(*ikey == grades[i]){
+        cout << names[i] << " (" << scores[i] << ")" << endl;
+        status = 1;
+        }
+    }
+    if(status != 1) cout << "Cannot found." << endl;
+    cout << "---------------------------------\n";
 }
 
 
